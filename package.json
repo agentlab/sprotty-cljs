@@ -8,8 +8,11 @@
   },
   "dependencies": {
     "create-react-class": "^15.6.2",
+    "inversify": "^5.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "shadow-cljs": "^2.8.92"
+    "shadow-cljs": "^2.8.92",
+    "sprotty": "^0.7.0",
+    "typescript": "^3.8.3"
   }
 }
