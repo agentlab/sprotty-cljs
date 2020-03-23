@@ -72,4 +72,3 @@ var IconView = /** @class */ (function () {
     return IconView;
 }());
 exports.IconView = IconView;
-//# sourceMappingURL=views.js.map

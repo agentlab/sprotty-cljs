@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-
+import "reflect-metadata";
 import { Container, ContainerModule } from "inversify";
 import {
     TYPES, configureViewerOptions, SGraphView, SLabelView, SCompartmentView, PolylineEdgeView,
@@ -30,10 +30,10 @@ import { ClassDiagramLabelValidator, ClassDiagramLabelValidationDecorator } from
 import { Icon, ClassNode, ClassLabel, PropertyLabel } from "./model";
 
 export default (containerId: string) => {
-    // require("../../../css/sprotty.css");
-    // require("../../../css/command-palette.css");
-    // require("../../../css/edit-label.css");
-    // require("../css/diagram.css");
+    require("../css/sprotty.css");
+    require("../css/command-palette.css");
+    require("../css/edit-label.css");
+    require("../css/diagram.css");
 
     const classDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
         bind(TYPES.ModelSource).to(ClassDiagramModelSource).inSingletonScope();

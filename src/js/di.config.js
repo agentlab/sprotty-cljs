@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /********************************************************************************
  * Copyright (c) 2017-2018 TypeFox and others.
  *
@@ -14,7 +15,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
 var inversify_1 = require("inversify");
 var sprotty_1 = require("sprotty");
 var views_1 = require("./views");
@@ -23,10 +24,10 @@ var model_source_1 = require("./model-source");
 var label_validation_1 = require("./label-validation");
 var model_1 = require("./model");
 exports.default = (function (containerId) {
-    // require("../../../css/sprotty.css");
-    // require("../../../css/command-palette.css");
-    // require("../../../css/edit-label.css");
-    // require("../css/diagram.css");
+    require("../css/sprotty.css");
+    require("../css/command-palette.css");
+    require("../css/edit-label.css");
+    require("../css/diagram.css");
     var classDiagramModule = new inversify_1.ContainerModule(function (bind, unbind, isBound, rebind) {
         bind(sprotty_1.TYPES.ModelSource).to(model_source_1.ClassDiagramModelSource).inSingletonScope();
         rebind(sprotty_1.TYPES.ILogger).to(sprotty_1.ConsoleLogger).inSingletonScope();
@@ -69,4 +70,3 @@ exports.default = (function (containerId) {
     container.load(classDiagramModule);
     return container;
 });
-//# sourceMappingURL=di.config.js.map

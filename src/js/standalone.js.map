@@ -1,1 +1,0 @@
-{"version":3,"file":"standalone.js","sourceRoot":"","sources":["../src/app/classdiagram/src/standalone.ts"],"names":[],"mappings":";AAAA;;;;;;;;;;;;;;kFAckF;;AAElF,yCAA0C;AAC1C,mCAAkD;AAElD,SAAwB,eAAe;IACnC,IAAM,SAAS,GAAG,mBAAe,CAAC,SAAS,CAAC,CAAC;IAC7C,IAAM,WAAW,GAAG,SAAS,CAAC,GAAG,CAAmB,eAAK,CAAC,WAAW,CAAC,CAAC;IACvE,WAAW,CAAC,WAAW,EAAE,CAAC;AAC9B,CAAC;AAJD,kCAIC"}

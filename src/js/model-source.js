@@ -456,4 +456,3 @@ var ClassDiagramModelSource = /** @class */ (function (_super) {
     return ClassDiagramModelSource;
 }(sprotty_1.LocalModelSource));
 exports.ClassDiagramModelSource = ClassDiagramModelSource;
-//# sourceMappingURL=model-source.js.map

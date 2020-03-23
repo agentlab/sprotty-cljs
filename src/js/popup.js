@@ -61,4 +61,3 @@ var PopupModelProvider = /** @class */ (function () {
     return PopupModelProvider;
 }());
 exports.PopupModelProvider = PopupModelProvider;
-//# sourceMappingURL=popup.js.map

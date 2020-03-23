@@ -13,14 +13,33 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { RenderingContext, IView, RectangularNodeView, SNode } from 'sprotty';
-import { VNode } from "snabbdom/vnode";
-import { Icon } from './model';
-export declare class NodeView extends RectangularNodeView {
-    render(node: Readonly<SNode>, context: RenderingContext): VNode;
+
+.sprotty {
+    padding: 0px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-export declare class IconView implements IView {
-    render(element: Icon, context: RenderingContext): VNode;
-    getRadius(): number;
+
+.sprotty-hidden {
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
 }
-//# sourceMappingURL=views.d.ts.map
+
+.sprotty-popup {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: absolute;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid;
+    max-width: 400px;
+    min-width: 100px;
+}
+
+.sprotty-popup > div {
+    margin: 10px;
+}
+
+.sprotty-popup-closed {
+    display: none;
+}

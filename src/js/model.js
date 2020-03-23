@@ -93,4 +93,3 @@ var Icon = /** @class */ (function (_super) {
     return Icon;
 }(sprotty_1.SShapeElement));
 exports.Icon = Icon;
-//# sourceMappingURL=model.js.map

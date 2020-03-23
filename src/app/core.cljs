@@ -1,6 +1,6 @@
 (ns app.core
   (:require [reagent.core :as reagent :refer [atom]]
-            ["/js/standalone.js" :as sprotty-example]))
+            ["/js/standalone.js" :as sprotty-example :default run]))
 
 ;; define your app data so that it doesn't get over-written on reload
 
@@ -12,10 +12,16 @@
    [:h3 "Edit this and watch it change!"]])
 
 (defn some-component []
-  [:button {:on-click (fn [] 
-                        (.runClassDiagram sprotty-example)
-                        (js/console.log "Click"))} 
-   "Help"]) 
+  [:div
+   [:link {:rel "stylesheet" :href "css/diagram.css"}]
+   [:link {:rel "stylesheet" :href "css/edit-label.css "}]
+   [:link {:rel " stylesheet " :href " css/command-palette.css "}]
+   [:link {:rel " stylesheet " :href " css/sprotty.css"}]
+   [:div {:id "sprotty"}
+    [:button {:on-click (fn [] 
+                          (js/console.log (run))
+                          (js/console.log "Click"))} 
+     "Help"]]]) 
 
 (defn start []
   (reagent/render-component [some-component]

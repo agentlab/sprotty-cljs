@@ -113,4 +113,3 @@ var ClassDiagramLabelValidationDecorator = /** @class */ (function () {
     return ClassDiagramLabelValidationDecorator;
 }());
 exports.ClassDiagramLabelValidationDecorator = ClassDiagramLabelValidationDecorator;
-//# sourceMappingURL=label-validation.js.map

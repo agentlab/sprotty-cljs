@@ -13,21 +13,33 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { SShapeElement, Expandable, RectangularNode, Nameable, SLabel, WithEditableLabel } from 'sprotty';
-export declare class ClassNode extends RectangularNode implements Expandable, Nameable, WithEditableLabel {
-    expanded: boolean;
-    get editableLabel(): (import("sprotty").SChildElement & import("sprotty").EditableLabel) | undefined;
-    get name(): string;
+
+.sprotty {
+    padding: 0px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-export declare class ClassLabel extends SLabel {
+
+.sprotty-hidden {
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
 }
-export declare class PropertyLabel extends SLabel {
+
+.sprotty-popup {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: absolute;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid;
+    max-width: 400px;
+    min-width: 100px;
 }
-export declare class Icon extends SShapeElement {
-    static readonly DEFAULT_FEATURES: symbol[];
-    size: {
-        width: number;
-        height: number;
-    };
+
+.sprotty-popup > div {
+    margin: 10px;
 }
-//# sourceMappingURL=model.d.ts.map
+
+.sprotty-popup-closed {
+    display: none;
+}
