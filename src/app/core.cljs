@@ -1,8 +1,7 @@
 (ns app.core
   (:require [reagent.core :as reagent :refer [atom]]
-            ["/js/hello/print.js" :as print :default hello]
-			[app.exp]
-			; ["/js/standalone.js" :as sprotty-example :default run]
+			["/js/standalone.js" :as sprotty-example :default run]
+			[app.test]
 			))
 
 ;; define your app data so that it doesn't get over-written on reload
@@ -22,9 +21,9 @@
    [:link {:rel " stylesheet " :href " css/sprotty.css"}]
    [:div {:id "sprotty"}
     [:button {:on-click (fn [] 
-							(hello "World")
-                        ;   (run)
-                        ;   (js/console.log "Click")
+                          (run)
+						; (.hello (app.test/Test.))
+                          (js/console.log "Click")
 						  )} 
      "Help"]]]) 
 

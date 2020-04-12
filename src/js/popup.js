@@ -24,14 +24,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var inversify_1 = require("inversify");
-var sprotty_1 = require("sprotty");
-var PopupModelProvider = /** @class */ (function () {
-    function PopupModelProvider() {
-    }
-    PopupModelProvider.prototype.getPopupModel = function (request, element) {
+const inversify_1 = require("inversify");
+const sprotty_1 = require("sprotty");
+let PopupModelProvider = class PopupModelProvider {
+    getPopupModel(request, element) {
         if (element !== undefined && element.type === 'node:class') {
-            var node = this.modelFactory.createElement(element);
+            const node = this.modelFactory.createElement(element);
             return {
                 type: 'html',
                 id: 'popup',
@@ -39,7 +37,7 @@ var PopupModelProvider = /** @class */ (function () {
                     {
                         type: 'pre-rendered',
                         id: 'popup-title',
-                        code: "<div class=\"sprotty-popup-title\">Class " + node.name + "</div>"
+                        code: `<div class="sprotty-popup-title">Class ${node.name}</div>`
                     },
                     {
                         type: 'pre-rendered',
@@ -50,14 +48,13 @@ var PopupModelProvider = /** @class */ (function () {
             };
         }
         return undefined;
-    };
-    __decorate([
-        inversify_1.inject(sprotty_1.TYPES.IModelFactory),
-        __metadata("design:type", Object)
-    ], PopupModelProvider.prototype, "modelFactory", void 0);
-    PopupModelProvider = __decorate([
-        inversify_1.injectable()
-    ], PopupModelProvider);
-    return PopupModelProvider;
-}());
+    }
+};
+__decorate([
+    inversify_1.inject(sprotty_1.TYPES.IModelFactory),
+    __metadata("design:type", Object)
+], PopupModelProvider.prototype, "modelFactory", void 0);
+PopupModelProvider = __decorate([
+    inversify_1.injectable()
+], PopupModelProvider);
 exports.PopupModelProvider = PopupModelProvider;

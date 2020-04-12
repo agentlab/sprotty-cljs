@@ -14,19 +14,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -35,40 +22,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /** @jsx svg */
-var snabbdom_jsx_1 = require("snabbdom-jsx");
-var sprotty_1 = require("sprotty");
-var inversify_1 = require("inversify");
-var NodeView = /** @class */ (function (_super) {
-    __extends(NodeView, _super);
-    function NodeView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    NodeView.prototype.render = function (node, context) {
+const snabbdom_jsx_1 = require("snabbdom-jsx");
+const sprotty_1 = require("sprotty");
+const inversify_1 = require("inversify");
+let NodeView = class NodeView extends sprotty_1.RectangularNodeView {
+    render(node, context) {
         return snabbdom_jsx_1.svg("g", null,
             snabbdom_jsx_1.svg("rect", { "class-sprotty-node": true, "class-node-package": node.type === 'node:package', "class-node-class": node.type === 'node:class', "class-mouseover": node.hoverFeedback, "class-selected": node.selected, x: "0", y: "0", width: Math.max(node.size.width, 0), height: Math.max(node.size.height, 0) }),
             context.renderChildren(node));
-    };
-    NodeView = __decorate([
-        inversify_1.injectable()
-    ], NodeView);
-    return NodeView;
-}(sprotty_1.RectangularNodeView));
-exports.NodeView = NodeView;
-var IconView = /** @class */ (function () {
-    function IconView() {
     }
-    IconView.prototype.render = function (element, context) {
-        var radius = this.getRadius();
+};
+NodeView = __decorate([
+    inversify_1.injectable()
+], NodeView);
+exports.NodeView = NodeView;
+let IconView = class IconView {
+    render(element, context) {
+        const radius = this.getRadius();
         return snabbdom_jsx_1.svg("g", null,
             snabbdom_jsx_1.svg("circle", { "class-sprotty-icon": true, r: radius, cx: radius, cy: radius }),
             context.renderChildren(element));
-    };
-    IconView.prototype.getRadius = function () {
+    }
+    getRadius() {
         return 16;
-    };
-    IconView = __decorate([
-        inversify_1.injectable()
-    ], IconView);
-    return IconView;
-}());
+    }
+};
+IconView = __decorate([
+    inversify_1.injectable()
+], IconView);
 exports.IconView = IconView;

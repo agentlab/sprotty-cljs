@@ -16,19 +16,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 require("reflect-metadata");
-var inversify_1 = require("inversify");
-var sprotty_1 = require("sprotty");
-var views_1 = require("./views");
-var popup_1 = require("./popup");
-var model_source_1 = require("./model-source");
-var label_validation_1 = require("./label-validation");
-var model_1 = require("./model");
-exports.default = (function (containerId) {
+const inversify_1 = require("inversify");
+const sprotty_1 = require("sprotty");
+const views_1 = require("./views");
+const popup_1 = require("./popup");
+const model_source_1 = require("./model-source");
+const label_validation_1 = require("./label-validation");
+const model_1 = require("./model");
+exports.default = (containerId) => {
     require("../css/sprotty.css");
     require("../css/command-palette.css");
     require("../css/edit-label.css");
     require("../css/diagram.css");
-    var classDiagramModule = new inversify_1.ContainerModule(function (bind, unbind, isBound, rebind) {
+    const classDiagramModule = new inversify_1.ContainerModule((bind, unbind, isBound, rebind) => {
         bind(sprotty_1.TYPES.ModelSource).to(model_source_1.ClassDiagramModelSource).inSingletonScope();
         rebind(sprotty_1.TYPES.ILogger).to(sprotty_1.ConsoleLogger).inSingletonScope();
         rebind(sprotty_1.TYPES.LogLevel).toConstantValue(sprotty_1.LogLevel.log);
@@ -37,7 +37,7 @@ exports.default = (function (containerId) {
         bind(sprotty_1.TYPES.ISnapper).to(sprotty_1.CenterGridSnapper);
         bind(sprotty_1.TYPES.IEditLabelValidator).to(label_validation_1.ClassDiagramLabelValidator);
         bind(sprotty_1.TYPES.IEditLabelValidationDecorator).to(label_validation_1.ClassDiagramLabelValidationDecorator);
-        var context = { bind: bind, unbind: unbind, isBound: isBound, rebind: rebind };
+        const context = { bind, unbind, isBound, rebind };
         sprotty_1.configureModelElement(context, 'graph', sprotty_1.SGraph, sprotty_1.SGraphView);
         sprotty_1.configureModelElement(context, 'node:package', sprotty_1.RectangularNode, views_1.NodeView);
         sprotty_1.configureModelElement(context, 'node:class', model_1.ClassNode, views_1.NodeView, {
@@ -65,8 +65,8 @@ exports.default = (function (containerId) {
             baseDiv: containerId
         });
     });
-    var container = new inversify_1.Container();
+    const container = new inversify_1.Container();
     sprotty_1.loadDefaultModules(container);
     container.load(classDiagramModule);
     return container;
-});
+};

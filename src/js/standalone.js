@@ -15,11 +15,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
-var di_config_1 = require("./di.config");
-var sprotty_1 = require("sprotty");
+const di_config_1 = require("./di.config");
+const sprotty_1 = require("sprotty");
 function runClassDiagram() {
-    var container = di_config_1.default('sprotty');
-    var modelSource = container.get(sprotty_1.TYPES.ModelSource);
+    const container = di_config_1.default('sprotty');
+    const modelSource = container.get(sprotty_1.TYPES.ModelSource);
     modelSource.updateModel();
 }
 exports.default = runClassDiagram;
