@@ -1,37 +1,49 @@
 
 (ns app.test
-	(:require ["reflect-metadata"]
-			["sprotty" :as sprotty]
+  (:require ["reflect-metadata"]
+            ["sprotty" :as sprotty]
 
-			[reagent.core :as reagent :refer [atom]]
-			[app.mock]
-))
+            [reagent.core :as reagent :refer [atom]]
+            [app.mock]))
 
-(defonce model-state (atom {:this 0
-							:currentRoot (app.mock/initializeModel)}))
+(defonce model-state (atom {:currentRoot (app.mock/initializeModel)}))
+
 ;; ---
 (defn ^:export Test []
-	(this-as this
-		(swap! model-state assoc :this this)
-		(js/console.log (clj->js (:currentRoot @model-state)))
-		(.call sprotty/LocalModelSource this)
-		(js/console.log this)
-		; (set! (.-currentRoot this) (clj->js (:currentRoot @model-state))) ; TODO: change to setModel
-	)
-)
+  (this-as this
+           (.call sprotty/LocalModelSource this)
+           (set! (.-currentRoot this) (clj->js (app.mock/initializeModel)))
+           this))
 
-(defn initialize [registry]
-		(js/console.log registry.register)
-		(.call (.. sprotty/LocalModelSource -prototype -initialize) (:this @model-state) registry)
-		(.register registry sprotty/CollapseExpandAction.KIND (:curr @model-state))
-		(.register registry sprotty/CollapseExpandAllAction.KIND (:curr @model-state))
-)
+(defn initialize [this registry]
+  (js/console.log this)
+  (js/console.log "help")
+  (.call (.. sprotty/LocalModelSource -prototype -initialize) this registry)
+  (.register registry sprotty/CollapseExpandAction.KIND this)
+        ;;    (.register registry sprotty/CollapseExpandAllAction.KIND this)
+  )
+
+(defn onExpandCollapse [action]
+  (js/console.log "DEBUG")
+  (let [expandIds (.-expandIds action)
+        collapseIds (.-collapseIds action)]
+    (js/console.log expandIds)
+
+    ))
+
+(defn handle [this action]
+  (let [kind (.-kind action)]
+    (cond
+      (= kind sprotty/CollapseExpandAction.KIND) (onExpandCollapse action)
+      :else (.call (.. sprotty/LocalModelSource -prototype -handle) this action))
+  ))
 
 (set! (.-prototype Test)
-		(js/Object.create (.-prototype sprotty/LocalModelSource)
-			#js {:initialize #js {:value
-									(fn [registry] 
-										(initialize registry))}}
-		)
-)
+      (js/Object.create (.-prototype sprotty/LocalModelSource)
+                        #js {:initialize #js {:value
+                                              (fn [registry]
+                                                (this-as this (initialize this registry)))}
+                             :handle #js {:value
+                                          (fn [action]
+                                            (this-as this (handle this action)))}}))
 ;; ---
