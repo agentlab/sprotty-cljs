@@ -67,9 +67,10 @@ let ClassDiagramModelSource = class ClassDiagramModelSource extends LocalModelSo
             if (element && element.children) {
                 const expanded = this.expansionState[id];
                 element.expanded = expanded;
-                element.children = element.children.filter(child => child.type !== 'comp:comp');
                 if (expanded)
-                    this.addExpandedChildren(element);
+					this.addExpandedChildren(element);
+				else
+                	element.children = element.children.filter(child => child.type !== 'comp:comp');
             }
         }
     }

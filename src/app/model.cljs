@@ -1,8 +1,10 @@
 
-(ns app.mock)
+(ns app.model)
 
+;; mock data
 (defn initializeModel []
-  (let [node0 {:id "node0"
+  (let [
+        node0 {:id "node0"
                :type "node:class"
                :expanded false
                :position {:x 100 :y 100}
@@ -23,6 +25,22 @@
                                        :text "Foo"}
                                       {:id "node0_expand"
                                        :type "button:expand"}]}]}
+        node1 {:id "node1_header"
+               :type "comp:header"
+               :layout "hbox"
+               :children [{:id "node1_icon"
+                           :type "icon"
+                           :layout "stack"
+                           :layoutOptions {:hAlign "center"
+                                           :resizeContainer false}
+                           :children [{:id "node1_ticon"
+                                       :type "label:icon"
+                                       :text "C"}]}
+                          {:id "node1_classname"
+                           :type "label:heading"
+                           :text "Bar"}
+                          {:id "node1_expand"
+                           :type "button:expand"}]}
         node2 {:id "node2"
                :type "node:class"
                :expanded false
@@ -64,22 +82,7 @@
                                           :position {:x 100
                                                      :y 100}
                                           :layout "vbox"
-                                          :children [{:id "node1_header"
-                                                      :type "comp:header"
-                                                      :layout "hbox"
-                                                      :children [{:id "node1_icon"
-                                                                  :type "icon"
-                                                                  :layout "stack"
-                                                                  :layoutOptions {:hAlign "center"
-                                                                                  :resizeContainer false}
-                                                                  :children [{:id "node1_ticon"
-                                                                              :type "label:icon"
-                                                                              :text "C"}]}
-                                                                 {:id "node1_classname"
-                                                                  :type "label:heading"
-                                                                  :text "Bar"}
-                                                                 {:id "node1_expand"
-                                                                  :type "button:expand"}]}]}]}]}
+                                          :children [node1]}]}]}
         edge {:id "edge"
               :type "edge:straight"
               :sourceId "node0"
@@ -154,3 +157,52 @@
                      :paddingRight 7
                      :paddingTop 7
                      :paddingBottom 7}}))
+
+;; mock data
+(defn getChildren [node]
+  (cond
+    (= node "node0") [{:id "node0_attrs"
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children [{:id "node0_op2"
+                                   :type "label:text"
+                                   :text "name: string"}]}
+                      {:id "node0_ops"
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children [{:id "node0_op0"
+                                   :type "label:text"
+                                   :text "+ foo(): integer"}
+                                  {:id "node0_op1"
+                                   :type "label:text"
+                                   :text "# bar(x: string): void"}]}]
+    (= node "node1") [{:id "node1_attrs"
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children [{:id "node1_op2"
+                                   :type "label:text"
+                                   :text "name: string"}]}
+                      {:id "node1_ops"
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children [{:id "node1_op0"
+                                   :type "label:text"
+                                   :text "+ foo(): Foo"}]}]
+    :else []))
+
+(defn branch? [n]
+  (if (map? n) (contains? n :children) false))
+
+(defn get-all-path [path m] (into (sorted-map)
+  (cond
+    (branch? m) (apply concat (seq [{(get m :id) path} 
+                       (get-all-path (conj path :children) (get m :children))]))
+    (vector? m) (apply concat (map-indexed (fn [idx itm] 
+                                (get-all-path (conj path idx) itm)
+                                )m))
+    :else {(get m :id) path}
+    ))
+  )
+
+(defn getElement [id model]
+  (get-in model (get (get-all-path [] model) id)))
