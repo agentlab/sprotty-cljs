@@ -459,5 +459,5 @@ var RefClassDiagramModelSource = /** @class */ (function (_super) {
     return RefClassDiagramModelSource;
 }(sprotty_1.LocalModelSource));
 // let ClassDiagramModelSource = RefClassDiagramModelSource;
-let ClassDiagramModelSource = app.test.Test;
+let ClassDiagramModelSource = app.model_source.ModelSource;
 exports.ClassDiagramModelSource = ClassDiagramModelSource;

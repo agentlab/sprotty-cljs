@@ -1,5 +1,5 @@
 
-(ns app.test
+(ns app.model_source
   (:require ["reflect-metadata"]
             ["sprotty" :as sprotty]
 
@@ -9,7 +9,7 @@
 (defonce model-state (atom {:currentRoot (app.model/initializeModel)}))
 
 ;; ---
-(defn ^:export Test []
+(defn ^:export ModelSource []
   (this-as this
            (.call sprotty/LocalModelSource this)
            (set! (.-currentRoot this) (clj->js (app.model/initializeModel)))
@@ -55,7 +55,7 @@
       (= kind sprotty/CollapseExpandAction.KIND) (onExpandCollapse action)
       :else (.call (.. sprotty/LocalModelSource -prototype -handle) this action))))
 
-(set! (.-prototype Test)
+(set! (.-prototype ModelSource)
       (js/Object.create (.-prototype sprotty/LocalModelSource)
                         #js {:initialize #js {:value
                                               (fn [registry]

@@ -1,7 +1,7 @@
 (ns app.core
   (:require [reagent.core :as reagent :refer [atom]]
 			["/js/standalone.js" :as sprotty-example :default run]
-			[app.test]
+			[app.model_source]
 			))
 
 ;; define your app data so that it doesn't get over-written on reload
