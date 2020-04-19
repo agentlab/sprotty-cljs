@@ -3,7 +3,7 @@
   (:require ["reflect-metadata"]
             ["sprotty" :as sprotty]
 
-            [reagent.core :as reagent :refer [atom]]
+            ;; [reagent.core :as reagent :refer [atom]]
             [app.model]))
 
 (defonce model-state (atom {:currentRoot (app.model/initializeModel)}))
@@ -15,15 +15,20 @@
            (set! (.-currentRoot this) (clj->js (app.model/initializeModel)))
            this))
 
+(defn updateState [this newState]
+  (set! (.-currentRoot this) (clj->js newState))
+  (.call (.. sprotty/LocalModelSource -prototype -updateModel) this))
+
+(defn auto-update [this]
+  (add-watch model-state :watcher
+             (fn [key atom old-state new-state]
+               (updateState this (:currentRoot new-state)))))
+
 (defn initialize [this registry]
+  (auto-update this)
   (.call (.. sprotty/LocalModelSource -prototype -initialize) this registry)
   (.register registry sprotty/CollapseExpandAction.KIND this)
         ;;    (.register registry sprotty/CollapseExpandAllAction.KIND this)
-  )
-
-(defn updateState [this]
-  (set! (.-currentRoot this) (clj->js (:currentRoot @model-state)))
-  (.call (.. sprotty/LocalModelSource -prototype -updateModel) this)
   )
 
 (defn onExpandCollapse [action]
@@ -33,31 +38,22 @@
         root (:currentRoot @model-state)
         path-map (app.model/get-all-path [] root)]
     (swap! model-state assoc :currentRoot
-           (let [new-root (->> expandIds
-                               (map #(get-in root (get path-map %)))
-                               (map #(assoc % :expanded true))
-                               (map #(assoc % :children (concat (get % :children) (app.model/getChildren (get % :id)))))
-                               (reduce #(assoc-in %1 (get path-map (get %2 :id)) %2) root)
-                               )]
-             (->> collapseIds
-                  (map #(get-in new-root (get path-map %)))
-                  (map #(assoc % :expanded false))
-                  (map #(assoc % :children (filter (fn [e] (not= (:type e) "comp:comp")) (get % :children))))
-                  (reduce #(assoc-in %1 (get path-map (get %2 :id)) %2) new-root)))
-    )
-   )
-  )
+           (reduce #(assoc-in %1 (get path-map (get %2 :id)) %2) root
+                   (concat (->> expandIds
+                                (map #(get-in root (get path-map %)))
+                                (map #(assoc % :expanded true))
+                                (map #(assoc % :children (concat (get % :children) (app.model/getChildren (get % :id))))))
+                           (->> collapseIds
+                                (map #(get-in root (get path-map %)))
+                                (map #(assoc % :expanded false))
+                                (map #(assoc % :children (filter (fn [e] (not= (:type e) "comp:comp")) (get % :children))))))))))
 
 (defn handle [this action]
   (let [kind (.-kind action)]
     (js/console.log "ACTION" kind)
     (cond
-      (= kind sprotty/CollapseExpandAction.KIND) ((fn [] (onExpandCollapse action)
-                                                    (updateState this)
-                                                    (js/console.log (clj->js(:currentRoot @model-state)))
-                                                    ))
-      :else (.call (.. sprotty/LocalModelSource -prototype -handle) this action))
-    ))
+      (= kind sprotty/CollapseExpandAction.KIND) (onExpandCollapse action)
+      :else (.call (.. sprotty/LocalModelSource -prototype -handle) this action))))
 
 (set! (.-prototype Test)
       (js/Object.create (.-prototype sprotty/LocalModelSource)
