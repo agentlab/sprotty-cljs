@@ -23,9 +23,9 @@
     [:button {:on-click (fn [] 
                           (run)
 						; (.hello (app.test/Test.))
-                          (js/console.log "Click")
+                          (js/console.log "Click edit")
 						  )} 
-     "Help"]]]) 
+     "Edit"]]]) 
 
 (defn start []
   (reagent/render-component [some-component]

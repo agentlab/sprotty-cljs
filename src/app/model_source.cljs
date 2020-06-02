@@ -6,13 +6,14 @@
             ;; [reagent.core :as reagent :refer [atom]]
             [app.model]))
 
-(defonce model-state (atom {:currentRoot (app.model/initializeModel)}))
+(defonce model-state (atom {:currentRoot (app.model/init)}))
 
 ;; ---
 (defn ^:export ModelSource []
   (this-as this
            (.call sprotty/LocalModelSource this)
-           (set! (.-currentRoot this) (clj->js (app.model/initializeModel)))
+           (set! (.-currentRoot this) (clj->js (app.model/init)))
+           (app.model/shaclModel model-state)
            this))
 
 (defn updateState [this newState]
@@ -21,7 +22,7 @@
 
 (defn auto-update [this]
   (add-watch model-state :watcher
-             (fn [key atom old-state new-state]
+             (fn [_ _ _ new-state]
                (updateState this (:currentRoot new-state)))))
 
 (defn initialize [this registry]

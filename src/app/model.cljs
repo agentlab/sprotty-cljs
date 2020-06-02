@@ -1,5 +1,7 @@
 
-(ns app.model)
+(ns app.model
+  (:require [app.sparql_client]
+            [clojure.pprint]))
 
 ;; mock data
 (defn initializeModel []
@@ -206,3 +208,148 @@
 
 (defn getElement [id model]
   (get-in model (get (get-all-path [] model) id)))
+
+;remove unnecessary data (caused by sparql client library)
+(defn clear [shapes]
+  (map (fn [shape]
+         (assoc shape :property
+                (into [] (map (fn [prop]
+                                ((keyword "@id") prop))
+                              (:property shape))))) shapes))
+
+(defn Graph [childrens]
+  {:id "graph"
+   :type "graph"
+   :children childrens
+   :layoutOptions {:hGap 5
+                   :hAlign "left"
+                   :paddingLeft 7
+                   :paddingRight 7
+                   :paddingTop 7
+                   :paddingBottom 7}})
+
+(defn init [] (Graph []))
+
+(defn Edge [sourceId targetId text]
+  {:id (str "edge_" sourceId "_" targetId)
+   :type "edge:straight"
+   :sourceId sourceId
+   :targetId targetId
+   :children [
+              {:id (str "edge_label_" sourceId "_" targetId)
+               :type "label:text"
+               :text text
+               :edgePlacement {:position 0.3
+                               :side "top"
+                               :rotate false}}]})
+
+(defn Attribute [id text]
+  {:id (str "node_" id "_op")
+   :type "label:text"
+   :text text})
+
+(defn Node [id attributes operations] {:id id
+           :type "node:class"
+           :expanded true
+           :position {:x 100 :y 100}
+           :layout "vbox"
+           :children [{:id (str "node_" id "_header")
+                       :type "comp:header"
+                       :layout "hbox"
+                       :children [{:id (str "node_" id "_icon")
+                                   :type "icon"
+                                   :layout "stack"
+                                   :layoutOptions {:hAlign "center"
+                                                   :resizeContainer false}
+                                   :children [{:id (str "node_" id "_ticon")
+                                               :type "label:icon"
+                                               :text "S"}]}
+                                  {:id (str "node_" id "_classname")
+                                   :type "label:heading"
+                                   :text id}
+                                  {:id (str "node_" id "_expand")
+                                   :type "button:expand"}]}
+                      {:id (str "node_" id "_attrs")
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children attributes}
+                      {:id (str "node_" id "_ops")
+                       :type "comp:comp"
+                       :layout "vbox"
+                       :children operations}]})
+
+(defn shaclModel [model-state]
+  (app.sparql_client/select-objects 
+   (fn [data] 
+     (let [shapes (js->clj data :keywordize-keys true)]
+    ;    (clojure.pprint/pprint shapes)
+       (cond
+         (= ((keyword "@id") (shapes 0)) "jsld:PersonShape") 
+
+        (let [clear_shapes (clear shapes)]
+        ;   (clojure.pprint/pprint clear_shapes)
+          (let [new_shapes                   
+                (concat 
+                   (map (fn [shape]
+                          (let [id ((keyword "@id") shape)]
+                            (Node id
+                                  (map (fn [[k v] _]
+                                         (Attribute (str id "_" k "_" v) (str (name k) " " v))
+                                         )(dissoc shape (keyword "@id") :property))
+                                  (map (fn [p_name]
+                                         (Attribute (str id "_" p_name) p_name)
+                                         )(:property shape))
+                                  ))
+                          )clear_shapes)
+                   (mapcat (fn [shape]
+                          (map (fn [prop] 
+                                 (Edge ((keyword "@id") shape) prop "sh:property")
+                                ) (:property shape))
+                          ) (filter (fn [shape] (seq (:property shape))) clear_shapes))
+                   )]
+            (clojure.pprint/pprint "_----")
+            (clojure.pprint/pprint (get-in model-state [:currentRoot :children]))
+            (clojure.pprint/pprint new_shapes)
+            (clojure.pprint/pprint "_----")
+
+            (swap! model-state assoc-in [:currentRoot :children] 
+                   (concat (get-in @model-state [:currentRoot :children]) new_shapes
+                           ))
+            )
+          )
+        :else 
+        (let [clear_prop_shape 
+              (map (fn [shape] (into {} (remove (fn [[_ v]] (nil? v)) shape))) shapes)]
+        ;   (clojure.pprint/pprint clear_prop_shape)
+            (clojure.pprint/pprint "====")
+            (clojure.pprint/pprint (get-in model-state [:currentRoot :children]))
+            (clojure.pprint/pprint "====")
+
+           (swap! model-state assoc-in [:currentRoot :children] 
+                 (concat (get-in @model-state [:currentRoot :children])
+                  (concat 
+                   (map (fn [shape]
+                          (let [id ((keyword "@id") shape)]
+                            (Node id
+                                  (map (fn [[k v] _]
+                                         (Attribute (str id "_" k "_" v) (str (name k) " " v))
+                                         )(dissoc shape (keyword "@id") :property))
+                                  
+                                  (if (contains? shape :node) [(Attribute (str id "_" (:node shape)) (:node shape))] [])
+                                  ))
+                          ) clear_prop_shape)
+                   (map (fn [shape]
+                          (Edge ((keyword "@id") shape) (:node shape) "sh:node")
+                         ) (filter (fn [shape] (contains? shape :node)) clear_prop_shape))
+                   )
+                  
+                  
+                  ))
+          )
+        )
+       )
+     
+     
+     
+     ))  
+  )
